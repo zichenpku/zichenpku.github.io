@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name | Personal Website</title>
-  <meta name="description" content="Personal academic homepage of Your Name" />
+  <title>Zichen Zhang | Personal Website</title>
+  <meta name="description" content="Personal academic homepage of Zichen Zhang" />
   <style>
     :root {
       --bg: #f8fafc;
@@ -129,12 +129,16 @@
       background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
       border-radius: 24px;
       min-height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #334155;
-      font-weight: 600;
+      overflow: hidden;
       border: 1px solid var(--line);
+    }
+
+    .profile-photo {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      object-fit: cover;
+      display: block;
     }
 
     section {
@@ -189,6 +193,10 @@
         min-height: 220px;
       }
 
+      .profile-photo {
+        min-height: 220px;
+      }
+
       .nav {
         align-items: flex-start;
         gap: 10px;
@@ -204,6 +212,7 @@
       <nav class="nav-links">
         <a href="#about">About</a>
         <a href="#research">Research</a>
+        <a href="#publications">Publications</a>
         <a href="#experience">Experience</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -213,18 +222,18 @@
   <main class="container">
     <section class="hero">
       <div>
-        <h1>Zichen Zhang (张梓宸) </h1>
+        <h1>Zichen Zhang (张梓宸)</h1>
         <p>
-          Medical student interested in immunlogy, clinical research, and data-driven medicine.
+          Medical student interested in immunology, clinical research, and data-driven medicine.
         </p>
         <div class="button-group">
           <a class="btn primary" href="#contact">Contact me</a>
           <a class="btn" href="cv.pdf" target="_blank">Download CV</a>
-          <a class="btn" href="https://github.com/yourusername" target="_blank">GitHub</a>
+          <a class="btn" href="https://github.com/zichenpku" target="_blank">GitHub</a>
         </div>
       </div>
       <div class="portrait">
-        Add your photo here
+        <img src="photo.jpg" alt="Zichen Zhang" class="profile-photo" />
       </div>
     </section>
 
@@ -234,12 +243,12 @@
         <p>
           I am a medical student at Peking University with a strong interest in
           translational medicine, academic writing, and research methodology.
-          My current focus includes clinical medicine, neuroscience, and the use
+          My current focus includes clinical medicine, immunology, and the use
           of computational tools in biomedical research.
         </p>
         <p class="muted">
-          This website serves as a brief overview of my academic profile,
-          research interests, and contact information.
+          This website provides a brief overview of my academic profile,
+          research interests, selected publications, and contact information.
         </p>
       </div>
     </section>
@@ -249,9 +258,40 @@
       <div class="card">
         <ul class="list">
           <li>Clinical medicine and translational research</li>
-          <li>immunlogy and neuroscience</li>
+          <li>Immunology and neuroscience</li>
           <li>Biomedical data analysis</li>
         </ul>
+      </div>
+    </section>
+
+    <section id="publications">
+      <h2 class="section-title">Selected Publications</h2>
+
+      <div class="card">
+        <div class="item-title">
+          Title of Your First Paper
+        </div>
+        <div class="muted">
+          Zichen Zhang, Coauthor A, Coauthor B
+        </div>
+        <p>
+          Journal Name, 2026.
+          <a href="#" target="_blank">[DOI]</a>
+          <a href="#" target="_blank">[PDF]</a>
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="item-title">
+          Title of Your Second Paper
+        </div>
+        <div class="muted">
+          Zichen Zhang, Coauthor C, Coauthor D
+        </div>
+        <p>
+          Under review / Preprint, 2026.
+          <a href="#" target="_blank">[Link]</a>
+        </p>
       </div>
     </section>
 
@@ -279,14 +319,15 @@
     <section id="contact">
       <h2 class="section-title">Contact</h2>
       <div class="card">
-        <p>Email: <a href="mailto:your_email@example.com">silele2004@163.com</a></p>
+        <p>Email: <a href="mailto:silele2004@163.com">silele2004@163.com</a></p>
+        <p>GitHub: <a href="https://github.com/zichenpku" target="_blank">github.com/zichenpku</a></p>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      © 2026 Zichen. Built with GitHub Pages.
+      © 2026 Zichen Zhang. Built with GitHub Pages.
     </div>
   </footer>
 </body>

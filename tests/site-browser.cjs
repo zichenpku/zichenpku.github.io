@@ -133,6 +133,48 @@ test("switches between complete English and Chinese pages", async () => {
   await page.close();
 });
 
+test("shows three concise personal honors in both languages", async () => {
+  const page = await browser.newPage({
+    viewport: { width: 1200, height: 800 },
+  });
+  const pages = [
+    {
+      path: "index.html",
+      heading: "Honors",
+      award: "Outstanding Research Award",
+      meta: "Peking University · 2025-2026",
+    },
+    {
+      path: "zh.html",
+      heading: "个人荣誉",
+      award: "北京大学优秀科研奖",
+      meta: "北京大学 · 2025至2026学年",
+    },
+  ];
+
+  for (const pageSpec of pages) {
+    await page.goto(`${baseUrl}/${pageSpec.path}`);
+    const section = page.locator("#awards");
+    assert.equal(await section.locator("h2").textContent(), pageSpec.heading);
+    assert.equal(await section.locator(".award-card").count(), 3);
+
+    const researchAward = section
+      .locator(".award-card")
+      .filter({ hasText: pageSpec.award });
+    assert.equal(await researchAward.count(), 1);
+    assert.match(await researchAward.textContent(), new RegExp(pageSpec.meta));
+    assert.equal(await researchAward.locator("h3, p").count(), 0);
+    assert.equal(await section.locator(".awards-grid p").count(), 0);
+
+    const columns = await section.locator(".awards-grid").evaluate((node) =>
+      getComputedStyle(node).gridTemplateColumns.split(" ").length,
+    );
+    assert.equal(columns, 3);
+  }
+
+  await page.close();
+});
+
 test("visually distinguishes the selected cancer-project output", async () => {
   const page = await browser.newPage({
     viewport: { width: 1200, height: 900 },

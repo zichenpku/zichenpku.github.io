@@ -38,7 +38,8 @@ test.before(async () => {
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   baseUrl = `http://127.0.0.1:${server.address().port}`;
-  browser = await chromium.launch();
+  const executablePath = process.env.SITE_BROWSER_EXECUTABLE;
+  browser = await chromium.launch(executablePath ? { executablePath } : {});
 });
 
 test.after(async () => {
@@ -129,6 +130,91 @@ test("switches between complete English and Chinese pages", async () => {
   await page.locator(".language-link").click();
   await page.waitForURL(`${baseUrl}/index.html`);
   assert.equal(await page.locator("html").getAttribute("lang"), "en");
+  await page.close();
+});
+
+test("visually distinguishes the selected cancer-project output", async () => {
+  const page = await browser.newPage({
+    viewport: { width: 1200, height: 900 },
+  });
+
+  for (const pagePath of ["index.html", "zh.html"]) {
+    await page.goto(`${baseUrl}/${pagePath}`);
+    const output = page.locator(".selected-output");
+    assert.equal(await output.count(), 1);
+    const visual = await output.evaluate((node) => {
+      const style = getComputedStyle(node);
+      const parentStyle = getComputedStyle(node.closest(".card"));
+      return {
+        background: style.backgroundColor,
+        parentBackground: parentStyle.backgroundColor,
+        borderWidth: Number.parseFloat(style.borderLeftWidth),
+        outputFontSize: Number.parseFloat(
+          getComputedStyle(node.querySelector("p")).fontSize,
+        ),
+        bodyFontSize: Number.parseFloat(
+          getComputedStyle(node.closest(".card").querySelector(":scope > p")).fontSize,
+        ),
+      };
+    });
+    assert.notEqual(visual.background, visual.parentBackground);
+    assert.ok(visual.borderWidth >= 3);
+    assert.ok(visual.outputFontSize < visual.bodyFontSize);
+  }
+
+  await page.close();
+});
+
+test("keeps the UCHB output nested under the cancer project", async () => {
+  const page = await browser.newPage({
+    viewport: { width: 1200, height: 900 },
+  });
+  const pages = [
+    {
+      path: "index.html",
+      title: /Clinical and Multi-omic Study of Postoperative Intra-abdominal Infection/,
+    },
+    {
+      path: "zh.html",
+      title: /胃肠道肿瘤术后腹腔感染的临床与多组学研究/,
+    },
+  ];
+
+  for (const pageSpec of pages) {
+    await page.goto(`${baseUrl}/${pageSpec.path}`);
+    const parentTitle = await page
+      .locator(".selected-output")
+      .evaluate((node) => node.closest(".card").querySelector("h3").textContent);
+    assert.match(parentTitle, pageSpec.title);
+  }
+
+  await page.close();
+});
+
+test("preserves the nonsignificant permutation result in both languages", async () => {
+  const page = await browser.newPage({
+    viewport: { width: 1200, height: 900 },
+  });
+  const pages = [
+    {
+      path: "index.html",
+      project: "Short-term seizure forecasting from scalp EEG",
+      limit: /permutation test was not statistically significant/,
+    },
+    {
+      path: "zh.html",
+      project: "基于头皮脑电的癫痫发作短期预测",
+      limit: /置换检验尚未达到统计学显著性/,
+    },
+  ];
+
+  for (const pageSpec of pages) {
+    await page.goto(`${baseUrl}/${pageSpec.path}`);
+    const card = page.locator(".card").filter({ hasText: pageSpec.project });
+    assert.equal(await card.count(), 1);
+    assert.match(await card.textContent(), pageSpec.limit);
+  }
+
   await page.close();
 });
 

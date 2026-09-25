@@ -80,6 +80,8 @@ class EnglishPageTests(unittest.TestCase):
             "Manuscript in preparation",
             "Undergraduate Honors Program in Biology",
             "March 2024–March 2027",
+            "one to two research papers each week",
+            "Professor Jiazhi Hu",
             "Comparison between Different Repli-HiC Fountains",
             "October 2025",
         )
@@ -89,6 +91,28 @@ class EnglishPageTests(unittest.TestCase):
             "Cancer Boat Bridge",
             "foundation model training",
             "fine-tuned model weights",
+        ):
+            self.assertNotIn(forbidden, self.html)
+
+    def test_new_research_projects_and_limits_are_public(self) -> None:
+        required = (
+            "National Institute of Health Data Science at Peking University",
+            "September 2026 to Present",
+            "Short-term seizure forecasting from scalp EEG",
+            "patient-level data splits",
+            "permutation test was not statistically significant",
+            "does not yet establish clinical utility",
+            "Selected output · UCHB 2026",
+            "Local multi-omics features and systemic immune phenotypes",
+            "First-author abstract and poster",
+            "prospective validation in a patient-matched cohort",
+        )
+        for text in required:
+            self.assertIn(text, self.html)
+        self.assertEqual(self.html.count('class="selected-output"'), 1)
+        for forbidden in (
+            "clinically validated seizure predictor",
+            "validated biomarker panel",
         ):
             self.assertNotIn(forbidden, self.html)
 
@@ -156,14 +180,38 @@ class ChinesePageTests(unittest.TestCase):
             "吴舟桥课题组",
             "2026年4月至今",
             "论文撰写中",
-            "生物学本科生荣誉项目",
+            "北京大学生命科学学院本科生训练项目",
             "2024年3月至2027年3月",
+            "每周1-2篇文献阅读",
+            "胡家志教授",
             "Comparison between Different Repli-HiC Fountains",
             "2025年10月",
         )
         for text in required:
             self.assertIn(text, self.html)
         self.assertNotIn("Cancer Boat Bridge", self.html)
+
+    def test_new_research_projects_and_limits_are_public(self) -> None:
+        required = (
+            "北京大学健康医疗大数据国家研究院",
+            "2026年9月至今",
+            "基于头皮脑电的癫痫发作短期预测",
+            "患者级数据划分",
+            "置换检验尚未达到统计学显著性",
+            "尚不能据此判断临床有效性",
+            "阶段性成果 · UCHB 2026",
+            "Local multi-omics features and systemic immune phenotypes",
+            "第一作者摘要与墙报",
+            "前瞻性、同患者队列中验证",
+        )
+        for text in required:
+            self.assertIn(text, self.html)
+        self.assertEqual(self.html.count('class="selected-output"'), 1)
+        for forbidden in (
+            "已通过临床验证的癫痫预测模型",
+            "已验证的生物标志物组合",
+        ):
+            self.assertNotIn(forbidden, self.html)
 
     def test_formal_publication_and_awards(self) -> None:
         required = (
